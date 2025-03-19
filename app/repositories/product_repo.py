@@ -43,17 +43,11 @@ class ProductRepository:
                 f"Ошибка при создании продукта: {str(e)}")
 
     @staticmethod
-    def update_product_by_id(product_id: int, updated_data: dict[str, str | int]) -> Product:
-        """Обновить продукт по ID"""
-        product: Optional[Product] = db.session.query(
-            Product).filter_by(id=product_id).first()
-
-        if "category_id" in updated_data:
-            if not CategoryRepository.category_exists_by_id(updated_data["category_id"]):
-                raise BadRequest("Категория с таким ID не существует")
+    def update_product_by_id(product_id: int, updated_data: dict[str, str | int]) -> Optional[Product]:
+        product = db.session.query(Product).filter_by(id=product_id).first()
 
         if not product:
-            raise NotFound(f"Продукт с id {product_id} не найден")
+            return None
 
         for key, value in updated_data.items():
             if hasattr(product, key):
@@ -63,7 +57,6 @@ class ProductRepository:
             db.session.commit()
             db.session.refresh(product)
             return product
-
         except Exception as e:
             db.session.rollback()
             raise InternalServerError(
@@ -71,7 +64,6 @@ class ProductRepository:
 
     @staticmethod
     def delete_product_by_id(product_id: int) -> bool:
-        """Удалить продукт по ID"""
         existing_product: Optional[Product] = ProductRepository.get_product_by_id(
             product_id)
 
