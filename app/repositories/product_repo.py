@@ -16,16 +16,10 @@ class ProductRepository:
         return db.session.query(Product).all()
 
     @staticmethod
-    def get_product_by_id(product_id: int) -> Optional[Product]:
-        if product_id <= 0:
-            raise BadRequest(
-                f"Некорректный идентификатор продукта: {product_id}")
+    def get_product_by_id(product_id: int) -> Product:
 
         product: Optional[Product] = db.session.query(
             Product).filter_by(id=product_id).first()
-
-        if product is None:
-            raise NotFound(f"Продукт с id {product_id} не найден")
 
         return product
 
@@ -34,27 +28,13 @@ class ProductRepository:
         return db.session.query(Product).filter_by(name=name).first()
 
     @staticmethod
-    def create_product(data: dict[str, str | int]) -> Product:
-        name: Optional[str] = data.get("name")
-        category_id: Optional[int] = data.get("category_id")
-
-        if not isinstance(name, str) or not isinstance(category_id, int):
-            raise BadRequest("Имя и id категории обязательные поля")
-
-        if not CategoryRepository.category_exists_by_id(category_id):
-            raise BadRequest("Такого id категории не существует")
-
-        existing_product: Optional[Product] = ProductRepository.get_product_by_name(
-            name)
-
-        if existing_product:
-            raise BadRequest("Продукт с таким именем уже существует")
-
+    def create_product(name: str, category_id: int) -> Product:
         new_product = Product(name=name, category_id=category_id)
 
         try:
             db.session.add(new_product)
             db.session.commit()
+
             return new_product
 
         except Exception as e:
