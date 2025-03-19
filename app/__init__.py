@@ -10,6 +10,8 @@ def create_app() -> Flask:
 
     init_db(app)
 
+    app.config["JSON_AS_ASCII"] = False
+
     app.register_blueprint(bp_api)
 
     return app
