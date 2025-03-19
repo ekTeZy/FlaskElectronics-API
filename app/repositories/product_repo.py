@@ -63,17 +63,11 @@ class ProductRepository:
                 f"Ошибка при обновлении продукта: {str(e)}")
 
     @staticmethod
-    def delete_product_by_id(product_id: int) -> bool:
-        existing_product: Optional[Product] = ProductRepository.get_product_by_id(
-            product_id)
-
-        if not existing_product:
-            raise BadRequest("Продукта с таким id не существует")
+    def delete_product(product: Product) -> None:
 
         try:
-            db.session.delete(existing_product)
+            db.session.delete(product)
             db.session.commit()
-            return True
 
         except Exception as e:
             db.session.rollback()
