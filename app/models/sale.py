@@ -9,3 +9,10 @@ class Sale(db.Model):
         db.Integer, db.ForeignKey("products.id"), nullable=False)
     quantity: int = db.Column(db.Integer, nullable=False)
     date = db.Column(db.Date, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "category_id": self.category_id
+        }
