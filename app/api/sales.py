@@ -7,7 +7,6 @@ sales_bp = Blueprint("sales", __name__, url_prefix="/sales")
 
 @sales_bp.route("/total", methods=["GET"])
 def get_total_sales():
-    """Получить общую сумму продаж за период"""
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
 
