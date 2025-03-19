@@ -1,5 +1,6 @@
 from flask import Blueprint
+from app.api.products import products_bp
 
-bp_api = Blueprint("api", __name__)
+bp_api = Blueprint("api", __name__, url_prefix="/api")
 
-from app.api import products, categories, sales
+bp_api.register_blueprint(products_bp)

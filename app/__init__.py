@@ -10,6 +10,6 @@ def create_app() -> Flask:
 
     init_db(app)
 
-    app.register_blueprint(bp_api, url_prefix="/api")
+    app.register_blueprint(bp_api)
 
     return app
