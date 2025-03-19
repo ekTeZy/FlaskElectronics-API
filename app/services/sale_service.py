@@ -48,7 +48,7 @@ class SaleService:
 
         execution_time = time.time() - start_time
 
-        logging.info(f"[DB] get_total_sales({start_date}, {end_date}) → БД, total_sales={total_sales}, "
+        logging.info(f"[DB] get_total_sales({start_date}, {end_date}) → БД"
                      f"time={execution_time:.4f} сек.")
 
         return total_sales
@@ -75,7 +75,7 @@ class SaleService:
         CacheManager.set(cache_key, top_selling_products)
 
         execution_time = time.time() - start_time
-        logging.info(f"[DB] get_top_selling_products({start_date}, {end_date}, {limit}) → БД, top_selling_products={top_selling_products}, "
+        logging.info(f"[DB] get_top_selling_products({start_date}, {end_date}, {limit}) → БД"
                      f"time={execution_time:.4f} сек.")
 
         return top_selling_products
