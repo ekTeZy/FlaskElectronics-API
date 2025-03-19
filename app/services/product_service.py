@@ -66,3 +66,15 @@ class ProductService:
             product_id, data)
 
         return updated_product.to_dict()
+
+    @staticmethod
+    def delete_product_by_id(product_id: int) -> dict:
+        existing_product = ProductRepository.get_product_by_id(
+            product_id)
+
+        if not existing_product:
+            raise BadRequest("Продукта с таким id не существует")
+
+        ProductRepository.delete_product(product=existing_product)
+
+        return {"msg": f"Продукт с id {product_id} успешно удалён"}
