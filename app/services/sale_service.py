@@ -1,7 +1,7 @@
+from typing import List
 from app.repositories.sale_repo import SaleRepository
 from werkzeug.exceptions import (
-    BadRequest,
-    NotFound,
+    BadRequest
 )
 from datetime import datetime
 
@@ -13,31 +13,27 @@ class SaleService:
         return [s.to_dict() for s in sales]
 
     @staticmethod
-    def get_total_sales(start_date: str, end_date: str) -> float:
+    def parse_date(date_str: str) -> datetime:
         try:
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        
-        except ValueError:
-            raise BadRequest("Некорректные даты фильтра")
+            return datetime.strptime(date_str, "%Y-%m-%d")
 
-        total_sales = SaleRepository.get_total_sales(start_date, end_date)
-        
-        return total_sales
+        except ValueError:
+            raise BadRequest(
+                f"Некорректный формат даты: {date_str}. Используйте YYYY-MM-DD.")
 
     @staticmethod
-    def get_top_selling_products(start_date: str, end_date: str, limit: int) -> list[dict]:
-        try:
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
-            limit = int(limit)
-            if limit <= 0:
-                raise ValueError("Лимит должен быть положительным числом")
-        
-        except ValueError:
-            raise BadRequest("Некорректные даты фильтра или лимит")
-        
-        top_selling_products = SaleRepository.get_top_selling_products(
-            start_date, end_date, limit)
-        
-        return top_selling_products
+    def get_total_sales(start_date: str, end_date: str) -> float:
+        start_date_dt = SaleService.parse_date(start_date)
+        end_date_dt = SaleService.parse_date(end_date)
+
+        return SaleRepository.get_total_sales(start_date_dt, end_date_dt)
+
+    @staticmethod
+    def get_top_selling_products(start_date: str, end_date: str, limit: int) -> List[dict]:
+        start_date_dt = SaleService.parse_date(start_date)
+        end_date_dt = SaleService.parse_date(end_date)
+
+        if not isinstance(limit, int) or limit <= 0:
+            raise BadRequest("Лимит должен быть положительным целым числом.")
+
+        return SaleRepository.get_top_selling_products(start_date_dt, end_date_dt, limit)
