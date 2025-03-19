@@ -46,3 +46,23 @@ class ProductService:
             name=name, category_id=category_id)
 
         return new_product.to_dict()
+
+    @staticmethod
+    def update_product_by_id(product_id: int, data: dict[str, str | int]) -> dict:
+
+        if product_id <= 0:
+            raise BadRequest("Некорректный ID продукта")
+
+        existing_product = ProductRepository.get_product_by_id(product_id)
+
+        if not existing_product:
+            raise NotFound(f"Продукт с id {product_id} не найден")
+
+        if "category_id" in data:
+            if not CategoryRepository.category_exists_by_id(data["category_id"]):
+                raise BadRequest("Категория с таким ID не существует")
+
+        updated_product = ProductRepository.update_product_by_id(
+            product_id, data)
+
+        return updated_product.to_dict()
